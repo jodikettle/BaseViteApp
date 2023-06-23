@@ -4,6 +4,7 @@ import { CenteredContent } from '@/components/CenteredContent/CenteredContent'
 import { Colors } from '@/constants/styles'
 import { MainPageWrapper, RocketIcon } from './HomePage.styles'
 import { PlayCard } from '@/components/PlayCard/PlayCard'
+import { PlayCardContainer } from '@/components/PlayCard/PlayCardContainer'
 
 export const HomePage: FC = () => {
   const items = [1, 2, 3, 4, 5, 6, 7, 8, 9]
@@ -20,9 +21,11 @@ export const HomePage: FC = () => {
           <Typography variant="h4" fontWeight={800} color={[Colors.RichBlack]}>
             Memory Game
           </Typography>
-          {items.map((item) => (
-            <PlayCard key={item} />
-          ))}
+          <PlayCardContainer>
+            {items.map((item) => (
+              <PlayCard key={item} />
+            ))}
+          </PlayCardContainer>
         </CenteredContent>
       </MainPageWrapper>
     )
