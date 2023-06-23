@@ -2,7 +2,7 @@ import { FC, useEffect, useRef, useState } from 'react'
 import { Typography } from '@mui/material'
 import { CenteredContent } from '@/components/CenteredContent/CenteredContent'
 import { Colors } from '@/constants/styles'
-import { MainPageWrapper, RocketIcon, ResetIcon } from './HomePage.styles'
+import { MainPageWrapper, StartIcon, ResetIcon } from './HomePage.styles'
 import { PlayCard } from '@/components/PlayCard/PlayCard'
 import { PlayCardContainer } from '@/components/PlayCard/PlayCardContainer'
 import { createGameCards } from '@/utils/cardGenerator'
@@ -10,6 +10,7 @@ import { createGameCards } from '@/utils/cardGenerator'
 export interface Card {
   key: string
   value: string
+  emoji: string
 }
 
 export const HomePage: FC = () => {
@@ -18,6 +19,7 @@ export const HomePage: FC = () => {
   const [openValue1, setOpenValue1] = useState<Card | undefined>(undefined)
   const [openValue2, setOpenValue2] = useState<Card | undefined>(undefined)
   const [actionable, setActionable] = useState<boolean>(false)
+  const [failureCount, setFailureCount] = useState<number>(0)
   const cards = useRef(createGameCards())
 
   const correctAudio = new Audio('/match-success.mp3')
@@ -49,11 +51,12 @@ export const HomePage: FC = () => {
   }
 
   const waitForClearValues = async () => {
-    await wait(3000)
+    await wait(2000)
     clearValues()
   }
 
   const handleSolveFailure = () => {
+    setFailureCount(failureCount + 1)
     failedAudio.play()
     waitForClearValues()
   }
@@ -93,6 +96,7 @@ export const HomePage: FC = () => {
     setOpenValue1(undefined)
     setOpenValue2(undefined)
     setActionable(true)
+    setFailureCount(0)
   }
 
   const isOpen = (card: Card) =>
@@ -104,28 +108,43 @@ export const HomePage: FC = () => {
     return (
       <MainPageWrapper>
         <CenteredContent>
-          <Typography variant="h4" fontWeight={800} color={[Colors.RichBlack]}>
+          <Typography
+            paddingBottom={5}
+            variant="h4"
+            fontWeight={800}
+            color={[Colors.RichBlack]}
+          >
             Memory Game <ResetIcon onClick={resetGame} />
           </Typography>
-          <p>
-            {openValue1 && <>{openValue1?.value} | </>}
-            {openValue2 && openValue2?.value}
-          </p>
           <PlayCardContainer>
             {cards.current.map((item) => (
               <PlayCard
                 actionable={actionable}
-                value={item.value}
+                displayText={item.emoji}
                 open={isOpen(item)}
                 onClick={() => handleCardClicked(item)}
                 key={item.key}
               />
             ))}
           </PlayCardContainer>
+          <Typography
+            paddingTop={3}
+            variant="h6"
+            fontWeight={500}
+            color={[Colors.RichBlack]}
+          >
+            Failure Count: {failureCount}
+          </Typography>
         </CenteredContent>
       </MainPageWrapper>
     )
   } else {
-    return <RocketIcon onClick={startTheGame} />
+    return (
+      <MainPageWrapper>
+        <CenteredContent>
+          <StartIcon onClick={startTheGame} />
+        </CenteredContent>
+      </MainPageWrapper>
+    )
   }
 }
