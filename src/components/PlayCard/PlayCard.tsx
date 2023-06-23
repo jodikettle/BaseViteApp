@@ -1,17 +1,23 @@
 import styled from '@emotion/styled'
 import React from 'react'
 
-const onSquareClick = () => {
-  console.log('clicked')
+interface Props {
+  value: string
+  open: boolean
+  actionable: boolean
+  onClick: () => void
 }
-
-interface Props { }
 
 const PlayCardButton = styled.button`
   color: white;
   background-color: DodgerBlue;
 `
 
-export const PlayCard: React.FC<Props> = (props) => {
-  return <PlayCardButton onClick={onSquareClick}>X</PlayCardButton>
-}
+export const PlayCard: React.FC<Props> = (props) =>
+  props.open ? (
+    <PlayCardButton disabled>{props.value}</PlayCardButton>
+  ) : (
+    <PlayCardButton disabled={!props.actionable} onClick={props.onClick}>
+      X
+    </PlayCardButton>
+  )

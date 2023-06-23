@@ -1,6 +1,7 @@
 import { Colors } from '@/constants/styles'
 import styled from '@emotion/styled'
 import RocketLaunchIcon from '@mui/icons-material/RocketLaunch'
+import RestartAlt from '@mui/icons-material/RestartAlt'
 
 export const MainPageWrapper = styled.main`
   height: 100vh;
@@ -23,6 +24,13 @@ export const RocketIcon = styled(RocketLaunchIcon)`
 
   &:hover {
     transform: scale(2.5);
+    opacity: 1;
+  }
+`
+
+export const ResetIcon = styled(RestartAlt)`
+  &:hover {
+    transform: scale(1.1);
     opacity: 1;
   }
 `
