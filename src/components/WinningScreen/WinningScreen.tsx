@@ -1,6 +1,14 @@
 import styled from '@emotion/styled'
+import { CenteredContent } from '../CenteredContent/CenteredContent'
+import Typography from '@mui/material/Typography'
+import { ResetIcon } from '@/pages/HomePage/HomePage.styles'
 
-const WinningScreen = styled.div`
+interface Props {
+  failureCount: number
+  resetGame: () => void
+}
+
+const WinningScreenContainer = styled.div`
   height: 600px;
   width: 800px;
   margin: 0 auto;
@@ -13,5 +21,32 @@ const WinningScreen = styled.div`
   animation-iteration-count: infinite;
   animation-fill-mode: none;
   animation-play-state: running;
-  background-image: url('https://i.imgur.com/L3aw9ev.png');
+  background-image: url('/winning.png');
+  @keyframes stretch {
+    0% {
+      transform: scale(0.3);
+      background-color: red;
+      border-radius: 100%;
+    }
+    50% {
+      background-color: orange;
+    }
+    100% {
+      transform: scale(1.5);
+      background-color: yellow;
+    }
+  }
 `
+
+export const WinningScreen: React.FC<Props> = (props: Props) => {
+  return (
+    <WinningScreenContainer>
+      <CenteredContent>
+        <Typography variant="h4" fontWeight={800} color="white">
+          You win! <ResetIcon onClick={props.resetGame} />
+          <p>You failed {props.failureCount} times!</p>
+        </Typography>
+      </CenteredContent>
+    </WinningScreenContainer>
+  )
+}

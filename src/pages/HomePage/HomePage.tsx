@@ -6,6 +6,7 @@ import { MainPageWrapper, StartIcon, ResetIcon } from './HomePage.styles'
 import { PlayCard } from '@/components/PlayCard/PlayCard'
 import { PlayCardContainer } from '@/components/PlayCard/PlayCardContainer'
 import { createGameCards } from '@/utils/cardGenerator'
+import { WinningScreen } from '@/components/WinningScreen/WinningScreen'
 
 export interface Card {
   key: string
@@ -15,6 +16,7 @@ export interface Card {
 
 export const HomePage: FC = () => {
   const [gameStarted, setGameStart] = useState(false)
+  const [gameWon, setGameWon] = useState(false)
   const [solvedValues, setSolvedValues] = useState<string[]>([])
   const [openValue1, setOpenValue1] = useState<Card | undefined>(undefined)
   const [openValue2, setOpenValue2] = useState<Card | undefined>(undefined)
@@ -25,7 +27,7 @@ export const HomePage: FC = () => {
   const correctAudio = new Audio('/match-success.mp3')
   const failedAudio = new Audio('/match-failed.mp3')
   const gameStartAudio = new Audio('/game-start.mp3')
-  const gameWonAudio = new Audio('/game-win.mp3')
+  const gameWonAudio = new Audio('/game-won.mp3')
 
   correctAudio.volume = 0.2
   failedAudio.volume = 0.2
@@ -51,7 +53,7 @@ export const HomePage: FC = () => {
   }
 
   const waitForClearValues = async () => {
-    await wait(2000)
+    await wait(1000)
     clearValues()
   }
 
@@ -61,9 +63,18 @@ export const HomePage: FC = () => {
     waitForClearValues()
   }
 
+  const handleWin = () => {
+    gameWonAudio.play()
+    setGameWon(true)
+  }
+
   const handleSolveSuccess = (val: string) => {
     if (!solvedValues.includes(val)) {
-      setSolvedValues([...solvedValues, val])
+      if (solvedValues.length + 1 === 8) {
+        handleWin()
+      } else {
+        setSolvedValues([...solvedValues, val])
+      }
     }
     correctAudio.play()
     waitForClearValues()
@@ -90,6 +101,7 @@ export const HomePage: FC = () => {
   }
 
   const resetGame = () => {
+    setGameWon(false)
     setActionable(false)
     setGameStart(false)
     setSolvedValues([])
@@ -103,6 +115,16 @@ export const HomePage: FC = () => {
     openValue1?.key === card.key ||
     openValue2?.key === card.key ||
     solvedValues.includes(card.value)
+
+  if (gameWon) {
+    return (
+      <MainPageWrapper>
+        <CenteredContent>
+          <WinningScreen failureCount={failureCount} resetGame={resetGame} />
+        </CenteredContent>
+      </MainPageWrapper>
+    )
+  }
 
   if (gameStarted) {
     return (
